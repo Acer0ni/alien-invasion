@@ -48,8 +48,6 @@ class AlienInvasion:
             self._update_screen()
             # redraw the screen during each pass through the loop.
 
-            print(len(self.bullets))
-
     def _check_events(self):
         """Respond to keypresses and mouse events"""
         for event in pygame.event.get():
