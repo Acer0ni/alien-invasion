@@ -10,6 +10,7 @@ class Gamestats:
 
         # High scores should never be reset.
         self.high_score = 0
+        self.level = 1
 
     def reset_stats(self):
         """Initialize statistics that can change during the game."""
