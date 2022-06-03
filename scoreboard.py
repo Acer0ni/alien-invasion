@@ -1,4 +1,6 @@
+import json
 import pygame.font
+
 from pygame.sprite import Group
 from ship import Ship
 
@@ -81,5 +83,9 @@ class Scoreboard:
     def check_high_score(self):
         """Check to see if there's a new highscore."""
         if self.stats.score > self.stats.high_score:
+            data = {"highscore": self.stats.score}
+            json_string = json.dumps(data)
+            with open("highscore.json", "w") as outfile:
+                outfile.write(json_string)
             self.stats.high_score = self.stats.score
             self.prep_high_score()
