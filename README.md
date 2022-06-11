@@ -4,7 +4,7 @@
 
 To clone the project; navigate to your desired directory on your command line of choice, then type `git clone https://github.com/Acer0ni/alien-invasion.git`.
 
-This project requires pipenv to run. To install pipenv, type `pip3 install pipenv`,once installed run `pipenv shell` in the projects root directory then `pipenv sync` to install the required dependencies.
+This project requires pipenv to run. To install pipenv, type `pip3 install pipenv`, once installed run `pipenv shell` in the projects root directory then `pipenv sync` to install the required dependencies.
 
 After dependencies are installed you can run the game with `python3 alien_invasion.py`
 
