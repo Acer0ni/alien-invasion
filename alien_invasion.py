@@ -1,3 +1,4 @@
+from re import T
 import sys
 from time import sleep
 import pygame
@@ -62,11 +63,16 @@ class AlienInvasion:
                 self._check_keyup_events(event)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
-                self._check_play_button(mouse_pos)
-                if self.login_screen.username_rect.collidepoint(mouse_pos):
-                    self.login_screen.username_active = True
+                if self.stats.logged_in:
+                    self._check_play_button(mouse_pos)
+                if self.login_screen.username_field.input_rect.collidepoint(mouse_pos):
+                    self.login_screen.username_field.is_active = True
                 else:
-                    self.login_screen.username_active - False
+                    self.login_screen.username_field.is_active = False
+                if self.login_screen.password_field.input_rect.collidepoint(mouse_pos):
+                    self.login_screen.password_field.is_active = True
+                else:
+                    self.login_screen.password_field.is_active = False
 
     def _check_play_button(self, mouse_pos):
         """Start a new game when the player clicks Play."""
@@ -101,11 +107,21 @@ class AlienInvasion:
             sys.exit()
         elif event.key == pygame.K_SPACE and self.stats.logged_in:
             self._fire_bullet()
-        elif not self.stats.logged_in and self.login_screen.username_active:
-            if event.key == pygame.K_BACKSPACE:
-                self.login_screen.username_text = self.login_screen.username_text[:-1]
-            else:
-                self.login_screen.username_text += event.unicode
+        elif not self.stats.logged_in:
+            if self.login_screen.username_field.is_active:
+                if event.key == pygame.K_BACKSPACE:
+                    self.login_screen.username_field.text = (
+                        self.login_screen.username_field.text[:-1]
+                    )
+                else:
+                    self.login_screen.username_field.text += event.unicode
+            elif self.login_screen.password_field.is_active:
+                if event.key == pygame.K_BACKSPACE:
+                    self.login_screen.password_field.text = (
+                        self.login_screen.password_field.text[:-1]
+                    )
+                else:
+                    self.login_screen.password_field.text += event.unicode
 
     def _check_keyup_events(self, event):
         """responds to key releases"""
