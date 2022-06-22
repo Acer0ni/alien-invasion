@@ -10,6 +10,8 @@ class Gamestats:
         self.reset_stats()
         # Start the Alien Invasion in an inactive state.
         self.game_active = False
+        self.logged_in = False
+        self.has_account = False
         with open("highscore.json") as json_file:
             data = json.load(json_file)
         # High scores should never be reset.

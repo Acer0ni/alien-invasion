@@ -8,6 +8,7 @@ from ship import Ship
 from bullet import Bullet
 from alien import Alien
 from button import Button
+from login_screen import Login_Screen
 
 
 class AlienInvasion:
@@ -35,11 +36,13 @@ class AlienInvasion:
 
         # Make the Play button
         self.play_button = Button(self, "Play")
+        self.login_screen = Login_Screen(self)
 
     def run_game(self):
         """start the main loop for the game"""
         while True:
             self._check_events()
+
             if self.stats.game_active:
                 self.ship.update()
                 self._update_bullets()
@@ -60,6 +63,10 @@ class AlienInvasion:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
                 self._check_play_button(mouse_pos)
+                if self.login_screen.username_rect.collidepoint(mouse_pos):
+                    self.login_screen.username_active = True
+                else:
+                    self.login_screen.username_active - False
 
     def _check_play_button(self, mouse_pos):
         """Start a new game when the player clicks Play."""
@@ -85,21 +92,26 @@ class AlienInvasion:
 
     def _check_keydown_events(self, event):
         """responds to keypresses"""
-        if event.key == pygame.K_RIGHT:
+        if event.key == pygame.K_RIGHT and self.stats.logged_in:
             # move the ship to the right
             self.ship.moving_right = True
-        elif event.key == pygame.K_LEFT:
+        elif event.key == pygame.K_LEFT and self.stats.logged_in:
             self.ship.moving_left = True
-        elif event.key == pygame.K_q:
+        elif event.key == pygame.K_q and self.stats.logged_in:
             sys.exit()
-        elif event.key == pygame.K_SPACE:
+        elif event.key == pygame.K_SPACE and self.stats.logged_in:
             self._fire_bullet()
+        elif not self.stats.logged_in and self.login_screen.username_active:
+            if event.key == pygame.K_BACKSPACE:
+                self.login_screen.username_text = self.login_screen.username_text[:-1]
+            else:
+                self.login_screen.username_text += event.unicode
 
     def _check_keyup_events(self, event):
         """responds to key releases"""
-        if event.key == pygame.K_RIGHT:
+        if event.key == pygame.K_RIGHT and self.stats.logged_in:
             self.ship.moving_right = False
-        if event.key == pygame.K_LEFT:
+        if event.key == pygame.K_LEFT and self.stats.logged_in:
             self.ship.moving_left = False
 
     def _fire_bullet(self):
@@ -141,19 +153,22 @@ class AlienInvasion:
 
     def _update_screen(self):
         """updates images on the screen and flip the the new screen"""
-        self.screen.fill(self.settings.bg_color)
-        self.ship.blitme()
-        for bullet in self.bullets.sprites():
-            bullet.draw_bullet()
-        self.aliens.draw(self.screen)
+        if not self.stats.logged_in:
+            self.login_screen.display_login_page()
+        else:
+            self.screen.fill(self.settings.bg_color)
+            self.ship.blitme()
+            for bullet in self.bullets.sprites():
+                bullet.draw_bullet()
+            self.aliens.draw(self.screen)
 
-        # draw the score information.
-        self.sb.show_score()
+            # draw the score information.
+            self.sb.show_score()
 
-        # Draw the play button if the game is inactive
-        if not self.stats.game_active:
-            self.play_button.draw_button()
-        pygame.display.flip()
+            # Draw the play button if the game is inactive
+            if not self.stats.game_active:
+                self.play_button.draw_button()
+            pygame.display.flip()
 
     def _create_fleet(self):
         """Create the fleet of aliens."""
