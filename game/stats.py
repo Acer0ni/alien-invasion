@@ -1,7 +1,8 @@
 import json
+import os
 
 
-class Gamestats:
+class GameStats:
     """Track  statistics for alien invasion."""
 
     def __init__(self, ai_game):
@@ -12,11 +13,16 @@ class Gamestats:
         self.game_active = False
         self.logged_in = False
         self.has_account = False
-        with open("highscore.json") as json_file:
-            data = json.load(json_file)
-        # High scores should never be reset.
-        self.high_score = data["highscore"]
+        self.high_score = self.load_high_scores()
         self.level = 1
+
+    def load_high_scores(self):
+        if not os.path.isfile("highscore.json"):
+            return 0
+        with open("highscore.json") as f:
+            data = json.load(f)
+
+        return data.get("highscore", 0)
 
     def reset_stats(self):
         """Initialize statistics that can change during the game."""

@@ -2,7 +2,7 @@ import json
 import pygame.font
 
 from pygame.sprite import Group
-from ship import Ship
+from game.sprites.ship import Ship
 
 
 class Scoreboard:

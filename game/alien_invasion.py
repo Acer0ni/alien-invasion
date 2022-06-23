@@ -1,15 +1,15 @@
-from re import T
 import sys
 from time import sleep
 import pygame
-from settings import Settings
-from game_stats import Gamestats
-from scoreboard import Scoreboard
-from ship import Ship
-from bullet import Bullet
-from alien import Alien
-from button import Button
-from auth.login_screen import LoginScreen
+from game.network.client import HighScoresClient
+from game.settings import Settings
+from game.stats import GameStats
+from game.scoreboard import Scoreboard
+from game.sprites.ship import Ship
+from game.sprites.bullet import Bullet
+from game.sprites.alien import Alien
+from game.ui.button import Button
+from game.screens.login import LoginScreen
 
 
 class AlienInvasion:
@@ -19,6 +19,7 @@ class AlienInvasion:
         """init the game ,and create game resources"""
         pygame.init()
         self.settings = Settings()
+        self.client = HighScoresClient()
 
         self.screen = pygame.display.set_mode(
             (self.settings.screen_width, self.settings.screen_height)
@@ -26,7 +27,7 @@ class AlienInvasion:
         pygame.display.set_caption("alien invasion")
 
         # Create an instance to store game statistics, and create a scoreboard
-        self.stats = Gamestats(self)
+        self.stats = GameStats(self)
         self.sb = Scoreboard(self)
 
         self.ship = Ship(self)
@@ -195,6 +196,7 @@ class AlienInvasion:
 
             # Draw the play button if the game is inactive
             if not self.stats.game_active:
+                self.play_button.rect.center = self.screen.get_rect().center
                 self.play_button.draw_button()
             pygame.display.flip()
 

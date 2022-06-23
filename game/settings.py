@@ -10,7 +10,7 @@ class Settings:
 
         # Ship settings
         self.ship_speed = 1.5
-        self.ship_limit = 3
+        self.ship_limit = 1
         # Bullet settings
         self.bullet_speed = 1.5
         self.bullet_width = 3
@@ -20,10 +20,10 @@ class Settings:
 
         # alien settings
 
-        self.fleet_drop_speed = 10
+        self.fleet_drop_speed = 20
 
         # how quickly the game speeds up
-        self.speedup_scale = 1.1
+        self.speedup_scale = 1.25
         # Howm quickly the alien point values increase
         self.score_scale = 1.5
 

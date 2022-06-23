@@ -1,7 +1,7 @@
 import pygame
-from button import Button
-from auth.text_input import TextInput
-from auth.password_input import PasswordInput
+from game.ui.button import Button
+from game.ui.text_input import TextInput
+from game.ui.hidden_text_input import HiddenTextInput
 
 
 class LoginScreen:
@@ -15,7 +15,7 @@ class LoginScreen:
         self.skip_button = Button(self, 450, 675, "skip login")
         self.bg_color = ai_game.settings.bg_color
         self.username_field = TextInput(self, 200, 200, 750, 75)
-        self.password_field = PasswordInput(self, 200, 300, 750, 75)
+        self.password_field = HiddenTextInput(self, 200, 300, 750, 75)
 
     def display_login_page(self):
         self.screen.fill(self.bg_color)
