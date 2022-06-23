@@ -9,7 +9,7 @@ from ship import Ship
 from bullet import Bullet
 from alien import Alien
 from button import Button
-from login_screen import Login_Screen
+from auth.login_screen import LoginScreen
 
 
 class AlienInvasion:
@@ -36,8 +36,8 @@ class AlienInvasion:
         self._create_fleet()
 
         # Make the Play button
-        self.play_button = Button(self, "Play")
-        self.login_screen = Login_Screen(self)
+        self.play_button = Button(self, 375, 375, "Play")
+        self.login_screen = LoginScreen(self)
 
     def run_game(self):
         """start the main loop for the game"""

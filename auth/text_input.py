@@ -1,12 +1,12 @@
 import pygame
 
 
-class Text_Input:
+class TextInput:
     def __init__(self, ai_game, left, top, width, height):
         self.ai_game = ai_game
         self.screen = ai_game.screen
         self.text = ""
-        self.base_font = pygame.font.Font(None, 32)
+        self.base_font = pygame.font.Font(None, 75)
         self.color_active = pygame.Color("lightskyblue3")
         self.color_passive = pygame.Color("chartreuse4")
         self.is_active = False
@@ -21,5 +21,10 @@ class Text_Input:
 
         pygame.draw.rect(self.screen, self.color, self.input_rect)
 
-        rendered_text = self.base_font.render(self.text, True, (255, 255, 255))
+        rendered_text = self.base_font.render(
+            self.get_displayed_text(), True, (255, 255, 255)
+        )
         self.screen.blit(rendered_text, (self.input_rect.x + 5, self.input_rect.y + 5))
+
+    def get_displayed_text(self):
+        return self.text
