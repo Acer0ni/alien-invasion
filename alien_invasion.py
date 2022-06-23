@@ -63,16 +63,28 @@ class AlienInvasion:
                 self._check_keyup_events(event)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
-                if self.stats.logged_in:
-                    self._check_play_button(mouse_pos)
-                if self.login_screen.username_field.input_rect.collidepoint(mouse_pos):
-                    self.login_screen.username_field.is_active = True
-                else:
-                    self.login_screen.username_field.is_active = False
-                if self.login_screen.password_field.input_rect.collidepoint(mouse_pos):
-                    self.login_screen.password_field.is_active = True
-                else:
-                    self.login_screen.password_field.is_active = False
+                self._check_mouse_events(mouse_pos)
+
+    def _check_mouse_events(self, mouse_pos):
+        if self.stats.logged_in:
+            self._check_play_button(mouse_pos)
+        if not self.stats.logged_in:
+            self._check_active_field(mouse_pos)
+            if self.login_screen.login_button.rect.collidepoint(mouse_pos):
+                print("login button works")
+            if self.login_screen.skip_button.rect.collidepoint(mouse_pos):
+                print("skip button works")
+                self.stats.logged_in = True
+
+    def _check_active_field(self, mouse_pos):
+        if self.login_screen.username_field.input_rect.collidepoint(mouse_pos):
+            self.login_screen.username_field.is_active = True
+        else:
+            self.login_screen.username_field.is_active = False
+        if self.login_screen.password_field.input_rect.collidepoint(mouse_pos):
+            self.login_screen.password_field.is_active = True
+        else:
+            self.login_screen.password_field.is_active = False
 
     def _check_play_button(self, mouse_pos):
         """Start a new game when the player clicks Play."""
