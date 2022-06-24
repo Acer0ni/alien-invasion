@@ -10,6 +10,7 @@ from game.sprites.bullet import Bullet
 from game.sprites.alien import Alien
 from game.ui.button import Button
 from game.screens.login import LoginScreen
+from game.state import State
 
 
 class AlienInvasion:
@@ -28,6 +29,7 @@ class AlienInvasion:
 
         # Create an instance to store game statistics, and create a scoreboard
         self.stats = GameStats(self)
+        self.state = State()
         self.sb = Scoreboard(self)
 
         self.ship = Ship(self)
@@ -45,7 +47,10 @@ class AlienInvasion:
         while True:
             self._check_events()
 
-            if self.stats.game_active:
+            if self.state.gamestate in [
+                self.state.logged_in_game_active,
+                self.state.skipped_login_game_active,
+            ]:
                 self.ship.update()
                 self._update_bullets()
                 self._update_aliens()
@@ -65,17 +70,31 @@ class AlienInvasion:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
                 self._check_mouse_events(mouse_pos)
+                print(self.state.gamestate)
 
     def _check_mouse_events(self, mouse_pos):
-        if self.stats.logged_in:
+        if self.state.gamestate in [
+            self.state.logged_in_game_inactive,
+            self.state.skipped_login_game_inactive,
+        ]:
             self._check_play_button(mouse_pos)
-        if not self.stats.logged_in:
+        if self.state.gamestate == self.state.login_screen:
             self._check_active_field(mouse_pos)
             if self.login_screen.login_button.rect.collidepoint(mouse_pos):
                 print("login button works")
             if self.login_screen.skip_button.rect.collidepoint(mouse_pos):
                 print("skip button works")
                 self.stats.logged_in = True
+                self.state.gamestate = self.state.skipped_login_game_inactive
+
+    def check_login_state(self):
+        if self.state.gamestate in [
+            self.state.logged_in_game_inactive,
+            self.state.logged_in_game_inactive,
+        ]:
+            return True
+        else:
+            return False
 
     def _check_active_field(self, mouse_pos):
         if self.login_screen.username_field.input_rect.collidepoint(mouse_pos):
@@ -90,11 +109,19 @@ class AlienInvasion:
     def _check_play_button(self, mouse_pos):
         """Start a new game when the player clicks Play."""
         button_clicked = self.play_button.rect.collidepoint(mouse_pos)
-        if button_clicked and not self.stats.game_active:
+        if button_clicked and self.state.gamestate in [
+            self.state.logged_in_game_inactive,
+            self.state.skipped_login_game_inactive,
+        ]:
             # REset the game statistics
             self.settings.initialize_dynamic_settings()
             self.stats.reset_stats()
-            self.stats.game_active = True
+            status = self.check_login_state()
+            if status:
+                self.state.gamestate = self.state.logged_in_game_active
+            else:
+                self.state.gamestate = self.state.skipped_login_game_active
+
             self.sb.prep_score()
             self.sb.prep_level()
             self.sb.prep_ships()
@@ -111,16 +138,20 @@ class AlienInvasion:
 
     def _check_keydown_events(self, event):
         """responds to keypresses"""
-        if event.key == pygame.K_RIGHT and self.stats.logged_in:
-            # move the ship to the right
-            self.ship.moving_right = True
-        elif event.key == pygame.K_LEFT and self.stats.logged_in:
-            self.ship.moving_left = True
-        elif event.key == pygame.K_q and self.stats.logged_in:
-            sys.exit()
-        elif event.key == pygame.K_SPACE and self.stats.logged_in:
-            self._fire_bullet()
-        elif not self.stats.logged_in:
+        if self.state.gamestate in [
+            self.state.logged_in_game_active,
+            self.state.skipped_login_game_active,
+        ]:
+            if event.key == pygame.K_RIGHT and self.stats.logged_in:
+                # move the ship to the right
+                self.ship.moving_right = True
+            elif event.key == pygame.K_LEFT:
+                self.ship.moving_left = True
+            elif event.key == pygame.K_q:
+                sys.exit()
+            elif event.key == pygame.K_SPACE:
+                self._fire_bullet()
+        elif self.state.gamestate == self.state.login_screen:
             if self.login_screen.username_field.is_active:
                 if event.key == pygame.K_BACKSPACE:
                     self.login_screen.username_field.text = (
@@ -182,23 +213,35 @@ class AlienInvasion:
 
     def _update_screen(self):
         """updates images on the screen and flip the the new screen"""
-        if not self.stats.logged_in:
+        if self.state.gamestate == self.state.login_screen:
             self.login_screen.display_login_page()
-        else:
-            self.screen.fill(self.settings.bg_color)
-            self.ship.blitme()
-            for bullet in self.bullets.sprites():
-                bullet.draw_bullet()
-            self.aliens.draw(self.screen)
+        elif self.state.gamestate in [
+            self.state.logged_in_game_active,
+            self.state.skipped_login_game_active,
+            self.state.logged_in_game_inactive,
+            self.state.skipped_login_game_inactive,
+        ]:
+            self.draw_game()
 
-            # draw the score information.
-            self.sb.show_score()
+    def draw_game(self):
+        self.screen.fill(self.settings.bg_color)
+        self.ship.blitme()  # move this into own function
 
-            # Draw the play button if the game is inactive
-            if not self.stats.game_active:
-                self.play_button.rect.center = self.screen.get_rect().center
-                self.play_button.draw_button()
-            pygame.display.flip()
+        for bullet in self.bullets.sprites():
+            bullet.draw_bullet()
+        self.aliens.draw(self.screen)
+
+        # draw the score information.
+        self.sb.show_score()
+
+        # Draw the play button if the game is inactive
+        if self.state.gamestate in [
+            self.state.logged_in_game_inactive,
+            self.state.skipped_login_game_inactive,
+        ]:
+            self.play_button.rect.center = self.screen.get_rect().center
+            self.play_button.draw_button()
+        pygame.display.flip()
 
     def _create_fleet(self):
         """Create the fleet of aliens."""
@@ -277,7 +320,12 @@ class AlienInvasion:
             # Pause.
             sleep(0.5)
         else:
-            self.stats.game_active = False
+            logged_in = self.check_login_state()
+            if logged_in:
+                self.state.gamestate = self.state.logged_in_game_inactive
+            else:
+                self.state.gamestate = self.state.skipped_login_game_inactive
+
             pygame.mouse.set_visible(True)
 
     def _check_aliens_bottom(self):
