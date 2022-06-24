@@ -1,6 +1,6 @@
 class State:
     def __init__(self):
-
+        self.logged_in_user = None
         self.login_screen = 1
         self.register_screen = 2
         self.logged_in_game_inactive = 3

@@ -22,7 +22,7 @@ class AlienInvasion:
         pygame.init()
         self.settings = Settings()
 
-        self.client = HighScoresClient()
+        self.client = HighScoresClient(self)
 
         self.screen = pygame.display.set_mode(
             (self.settings.screen_width, self.settings.screen_height)
@@ -157,7 +157,7 @@ class AlienInvasion:
             self.state.logged_in_game_active,
             self.state.skipped_login_game_active,
         ]:
-            if event.key == pygame.K_RIGHT and self.stats.logged_in:
+            if event.key == pygame.K_RIGHT:
                 # move the ship to the right
                 self.ship.moving_right = True
             elif event.key == pygame.K_LEFT:
@@ -184,10 +184,14 @@ class AlienInvasion:
 
     def _check_keyup_events(self, event):
         """responds to key releases"""
-        if event.key == pygame.K_RIGHT and self.stats.logged_in:
-            self.ship.moving_right = False
-        if event.key == pygame.K_LEFT and self.stats.logged_in:
-            self.ship.moving_left = False
+        if self.state.gamestate in [
+            self.state.logged_in_game_active,
+            self.state.skipped_login_game_active,
+        ]:
+            if event.key == pygame.K_RIGHT:
+                self.ship.moving_right = False
+            if event.key == pygame.K_LEFT:
+                self.ship.moving_left = False
 
     def _fire_bullet(self):
         """create a new bullet and add it to the bullets group."""
@@ -338,7 +342,7 @@ class AlienInvasion:
             logged_in = self.check_login_state()
             if logged_in:
                 self.state.gamestate = self.state.logged_in_game_inactive
-                # send score
+                # self.client.submit_highscore(self.stats.score)
             else:
                 self.state.gamestate = self.state.skipped_login_game_inactive
                 # save score locally

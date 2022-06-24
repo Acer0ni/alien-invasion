@@ -2,7 +2,10 @@ import requests
 
 
 class HighScoresClient:
-    def __init__(self):
+    def __init__(self, ai_game):
+        self.ai_game = ai_game
+        # self.state = self.ai_game.state
+
         self.session = requests.Session()
         self.headers = {"accept": "application/json"}
 
@@ -22,6 +25,7 @@ class HighScoresClient:
         if res.status_code != 200:
             return False
         else:
+            # self.state.logged_in_user = res.json()
             return True
 
         # TODO(acer0ni): Finish me
@@ -35,5 +39,12 @@ class HighScoresClient:
             return {}
         return res.json()
 
-    def submit_highscore(self, score):
-        ...
+    # def submit_highscore(self, score):
+    #     res = self.session.post(
+    #         "https://localhost:8000/api/score/",
+    #         json={"score": {score}, "user_id": {self.state.logged_in_user["id"]}},
+    #     )
+    #     res = res.json()
+    #     return res["score"]
+
+    #     ...
