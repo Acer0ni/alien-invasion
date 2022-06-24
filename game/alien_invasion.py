@@ -11,6 +11,7 @@ from game.sprites.alien import Alien
 from game.ui.button import Button
 from game.screens.login import LoginScreen
 from game.state import State
+from game.network.client import HighScoresClient
 
 
 class AlienInvasion:
@@ -20,6 +21,7 @@ class AlienInvasion:
         """init the game ,and create game resources"""
         pygame.init()
         self.settings = Settings()
+
         self.client = HighScoresClient()
 
         self.screen = pygame.display.set_mode(
@@ -70,7 +72,6 @@ class AlienInvasion:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
                 self._check_mouse_events(mouse_pos)
-                print(self.state.gamestate)
 
     def _check_mouse_events(self, mouse_pos):
         if self.state.gamestate in [
@@ -82,10 +83,24 @@ class AlienInvasion:
             self._check_active_field(mouse_pos)
             if self.login_screen.login_button.rect.collidepoint(mouse_pos):
                 print("login button works")
+
+                req = self.client.authenticate(
+                    self.login_screen.username_field.text,
+                    self.login_screen.password_field.text,
+                )
+                if not req:
+                    # figure out a way to have an error message pop up
+                    pass
+                else:
+                    self.state.gamestate = self.state.logged_in_game_inactive
+
             if self.login_screen.skip_button.rect.collidepoint(mouse_pos):
                 print("skip button works")
-                self.stats.logged_in = True
                 self.state.gamestate = self.state.skipped_login_game_inactive
+            req = self.client.get_highscores()
+            if req:
+                self.stats.high_score = req["score"]
+                self.sb.prep_high_score()
 
     def check_login_state(self):
         if self.state.gamestate in [
@@ -200,7 +215,7 @@ class AlienInvasion:
             for aliens in collisions.values():
                 self.stats.score += self.settings.alien_points * len(aliens)
             self.sb.prep_score()
-            self.sb.check_high_score()
+
         if not self.aliens:
             # Destroy existing bullets and create new fleet.
             self.bullets.empty()
@@ -225,7 +240,7 @@ class AlienInvasion:
 
     def draw_game(self):
         self.screen.fill(self.settings.bg_color)
-        self.ship.blitme()  # move this into own function
+        self.ship.blitme()
 
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
@@ -323,8 +338,11 @@ class AlienInvasion:
             logged_in = self.check_login_state()
             if logged_in:
                 self.state.gamestate = self.state.logged_in_game_inactive
+                # send score
             else:
                 self.state.gamestate = self.state.skipped_login_game_inactive
+                # save score locally
+                self.sb.check_high_score()
 
             pygame.mouse.set_visible(True)
 
