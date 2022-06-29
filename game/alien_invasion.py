@@ -22,7 +22,7 @@ class AlienInvasion:
         pygame.init()
         self.settings = Settings()
 
-        self.client = HighScoresClient(self)
+        self.client = HighScoresClient()
 
         self.screen = pygame.display.set_mode(
             (self.settings.screen_width, self.settings.screen_height)
@@ -105,7 +105,7 @@ class AlienInvasion:
     def check_login_state(self):
         if self.state.gamestate in [
             self.state.logged_in_game_inactive,
-            self.state.logged_in_game_inactive,
+            self.state.logged_in_game_active,
         ]:
             return True
         else:
@@ -340,9 +340,13 @@ class AlienInvasion:
             sleep(0.5)
         else:
             logged_in = self.check_login_state()
+            print(logged_in)
             if logged_in:
                 self.state.gamestate = self.state.logged_in_game_inactive
-                # self.client.submit_highscore(self.stats.score)
+                highscore = self.client.submit_highscore(self.stats.score)
+                print(highscore["score"])
+                self.stats.high_score = highscore["score"]
+                self.sb.prep_high_score()
             else:
                 self.state.gamestate = self.state.skipped_login_game_inactive
                 # save score locally
