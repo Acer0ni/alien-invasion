@@ -10,7 +10,6 @@ class LoginScreen:
         self.screen = ai_game.screen
         self.screen_rect = self.screen.get_rect()
         self.settings = ai_game.settings
-        self.stats = ai_game.stats
         self.login_button = Button(self, 450, 450, "login")
         self.skip_button = Button(self, 450, 675, "skip login")
         self.bg_color = ai_game.settings.bg_color

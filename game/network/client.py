@@ -36,7 +36,7 @@ class HighScoresClient:
             return {}
         return res.json()
 
-    def submit_highscore(self, score) -> Dict:
+    def submit_highscore(self, score) -> Dict[str, int]:
         csrf_token = self.session.get("http://localhost:8000/api/auth/csrf")
         self.headers["X-CSRFToken"] = csrf_token.cookies.get("csrftoken")
         res = self.session.post(

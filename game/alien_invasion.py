@@ -344,7 +344,6 @@ class AlienInvasion:
             if logged_in:
                 self.state.gamestate = self.state.logged_in_game_inactive
                 highscore = self.client.submit_highscore(self.stats.score)
-                print(highscore["score"])
                 self.stats.high_score = highscore["score"]
                 self.sb.prep_high_score()
             else:
