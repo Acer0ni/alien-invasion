@@ -12,6 +12,7 @@ from game.ui.button import Button
 from game.screens.login import LoginScreen
 from game.state import State
 from game.network.client import HighScoresClient
+from game.screens.register import RegisterScreen
 
 
 class AlienInvasion:
@@ -43,6 +44,7 @@ class AlienInvasion:
         # Make the Play button
         self.play_button = Button(self, 375, 375, "Play")
         self.login_screen = LoginScreen(self)
+        self.register_screen = RegisterScreen(self)
 
     def run_game(self):
         """start the main loop for the game"""
@@ -97,10 +99,31 @@ class AlienInvasion:
             if self.login_screen.skip_button.rect.collidepoint(mouse_pos):
                 print("skip button works")
                 self.state.gamestate = self.state.skipped_login_game_inactive
+            if self.login_screen.create_button.rect.collidepoint(mouse_pos):
+                print("register button works")
+                self.state.gamestate = self.state.register_screen
             req = self.client.get_highscores()
-            if req:
+            if req:  # move this to init?
                 self.stats.high_score = req["score"]
                 self.sb.prep_high_score()
+            else:
+                # load local score
+                pass
+        elif self.state.gamestate == self.state.register_screen:
+            self._check_active_field(mouse_pos)
+            if self.register_screen.register_button.rect.collidepoint(mouse_pos):
+                print("register button works")
+                req = self.client.register(
+                    self.register_screen.username_field.text,
+                    self.register_screen.password_field.text,
+                )
+                if req:
+                    self.state.gamestate = self.state.logged_in_game_inactive
+                else:
+                    # error message
+                    pass
+            if self.register_screen.back_button.rect.collidepoint(mouse_pos):
+                self.state.gamestate = self.state.login_screen
 
     def check_login_state(self):
         if self.state.gamestate in [
@@ -112,14 +135,21 @@ class AlienInvasion:
             return False
 
     def _check_active_field(self, mouse_pos):
-        if self.login_screen.username_field.input_rect.collidepoint(mouse_pos):
-            self.login_screen.username_field.is_active = True
-        else:
-            self.login_screen.username_field.is_active = False
-        if self.login_screen.password_field.input_rect.collidepoint(mouse_pos):
-            self.login_screen.password_field.is_active = True
-        else:
-            self.login_screen.password_field.is_active = False
+        self.login_screen.username_field.is_active = bool(
+            self.login_screen.username_field.input_rect.collidepoint(mouse_pos)
+        )
+
+        self.login_screen.password_field.is_active = bool(
+            self.login_screen.password_field.input_rect.collidepoint(mouse_pos)
+        )
+
+        self.register_screen.username_field.is_active = bool(
+            self.register_screen.username_field.input_rect.collidepoint(mouse_pos)
+        )
+
+        self.register_screen.password_field.is_active = bool(
+            self.register_screen.password_field.input_rect.collidepoint(mouse_pos)
+        )
 
     def _check_play_button(self, mouse_pos):
         """Start a new game when the player clicks Play."""
@@ -166,21 +196,28 @@ class AlienInvasion:
                 sys.exit()
             elif event.key == pygame.K_SPACE:
                 self._fire_bullet()
+        # this could be a lot cleaner probably
         elif self.state.gamestate == self.state.login_screen:
-            if self.login_screen.username_field.is_active:
+            self.handle_user_input(
+                event,
+                self.login_screen,
+                ("username_field", "password_field"),
+            )
+        elif self.state.gamestate == self.state.register_screen:
+            self.handle_user_input(
+                event=event,
+                screen=self.register_screen,
+                fields=("username_field", "password_field"),
+            )
+
+    def handle_user_input(self, event, screen, fields):
+        for f in fields:
+            field = getattr(screen, f)
+            if field.is_active:
                 if event.key == pygame.K_BACKSPACE:
-                    self.login_screen.username_field.text = (
-                        self.login_screen.username_field.text[:-1]
-                    )
+                    field.text = field.text[:-1]
                 else:
-                    self.login_screen.username_field.text += event.unicode
-            elif self.login_screen.password_field.is_active:
-                if event.key == pygame.K_BACKSPACE:
-                    self.login_screen.password_field.text = (
-                        self.login_screen.password_field.text[:-1]
-                    )
-                else:
-                    self.login_screen.password_field.text += event.unicode
+                    field.text += event.unicode
 
     def _check_keyup_events(self, event):
         """responds to key releases"""
@@ -234,6 +271,8 @@ class AlienInvasion:
         """updates images on the screen and flip the the new screen"""
         if self.state.gamestate == self.state.login_screen:
             self.login_screen.display_login_page()
+        elif self.state.gamestate == self.state.register_screen:
+            self.register_screen.draw_register_screen()
         elif self.state.gamestate in [
             self.state.logged_in_game_active,
             self.state.skipped_login_game_active,

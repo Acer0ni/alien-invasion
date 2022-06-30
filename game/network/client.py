@@ -20,12 +20,19 @@ class HighScoresClient:
             json={"username": user, "password": password},
             headers=self.headers,
         )
-        if res.status_code != 200:
-            return False
-        else:
-            return True
+        return res.status_code == 200
 
         # TODO(acer0ni): Finish me
+
+    def register(self, user: str, password: str):
+        csrf_token = self.session.get("http://localhost:8000/api/auth/csrf")
+        self.headers["X-CSRFToken"] = csrf_token.cookies.get("csrftoken")
+        res = self.session.post(
+            "http://localhost:8000/api/auth/register",
+            json={"username": user, "password": password},
+            headers=self.headers,
+        )
+        return res.status_code == 200
 
     def logout(self):
         ...
