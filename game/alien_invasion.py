@@ -85,7 +85,8 @@ class AlienInvasion:
         ]:
             self._check_play_button(mouse_pos)
         if self.state.gamestate == self.state.login_screen:
-            self._check_active_field(mouse_pos)
+            if not self.state.displaying_error:
+                self._check_active_field(mouse_pos)
             if (
                 self.login_screen.login_button.rect.collidepoint(mouse_pos)
                 and not self.state.displaying_error
@@ -146,7 +147,7 @@ class AlienInvasion:
                 and not self.state.displaying_error
             ):
                 self.state.gamestate = self.state.login_screen
-        elif (
+        if (
             self.errorbox.exit_button.rect.collidepoint(mouse_pos)
             and self.state.displaying_error
         ):
