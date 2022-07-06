@@ -10,6 +10,7 @@ from game.sprites.ship import Ship
 from game.sprites.bullet import Bullet
 from game.sprites.alien import Alien
 from game.ui.button import Button
+from game.ui.errorbox import ErrorBox
 from game.screens.login import LoginScreen
 from game.state import State
 from game.network.client import HighScoresClient
@@ -46,6 +47,7 @@ class AlienInvasion:
         self.play_button = Button(self, 375, 375, "Play")
         self.login_screen = LoginScreen(self)
         self.register_screen = RegisterScreen(self)
+        self.errorbox = ErrorBox(self, "exit")
 
     def run_game(self):
         """start the main loop for the game"""
@@ -84,7 +86,10 @@ class AlienInvasion:
             self._check_play_button(mouse_pos)
         if self.state.gamestate == self.state.login_screen:
             self._check_active_field(mouse_pos)
-            if self.login_screen.login_button.rect.collidepoint(mouse_pos):
+            if (
+                self.login_screen.login_button.rect.collidepoint(mouse_pos)
+                and not self.state.displaying_error
+            ):
                 print("login button works")
 
                 req = self.client.authenticate(
@@ -93,14 +98,24 @@ class AlienInvasion:
                 )
                 if not req:
                     # figure out a way to have an error message pop up
-                    pass
+                    self.errorbox.set_message(
+                        "error logging in: \n please check your username and password and try again"
+                    )
+                    self.state.displaying_error = True
+
                 else:
                     self.state.gamestate = self.state.logged_in_game_inactive
 
-            if self.login_screen.skip_button.rect.collidepoint(mouse_pos):
+            if (
+                self.login_screen.skip_button.rect.collidepoint(mouse_pos)
+                and not self.state.displaying_error
+            ):
                 print("skip button works")
                 self.state.gamestate = self.state.skipped_login_game_inactive
-            if self.login_screen.create_button.rect.collidepoint(mouse_pos):
+            if (
+                self.login_screen.create_button.rect.collidepoint(mouse_pos)
+                and not self.state.displaying_error
+            ):
                 print("register button works")
                 self.state.gamestate = self.state.register_screen
             req = self.client.get_highscores()
@@ -112,7 +127,10 @@ class AlienInvasion:
 
         elif self.state.gamestate == self.state.register_screen:
             self._check_active_field(mouse_pos)
-            if self.register_screen.register_button.rect.collidepoint(mouse_pos):
+            if (
+                self.register_screen.register_button.rect.collidepoint(mouse_pos)
+                and not self.state.displaying_error
+            ):
                 print("register button works")
                 req = self.client.register(
                     self.register_screen.username_field.text,
@@ -123,8 +141,16 @@ class AlienInvasion:
                 else:
                     # error message
                     pass
-            if self.register_screen.back_button.rect.collidepoint(mouse_pos):
+            if (
+                self.register_screen.back_button.rect.collidepoint(mouse_pos)
+                and not self.state.displaying_error
+            ):
                 self.state.gamestate = self.state.login_screen
+        elif (
+            self.errorbox.exit_button.rect.collidepoint(mouse_pos)
+            and self.state.displaying_error
+        ):
+            self.state.displaying_error = False
 
     def check_login_state(self):
         if self.state.gamestate in [
@@ -279,6 +305,9 @@ class AlienInvasion:
             self.state.skipped_login_game_inactive,
         ]:
             self.draw_game()
+        if self.state.displaying_error:
+            self.errorbox.draw_error_box()
+        pygame.display.flip()
 
     def draw_game(self):
         self.screen.fill(self.settings.bg_color)
@@ -298,7 +327,6 @@ class AlienInvasion:
         ]:
             self.play_button.rect.center = self.screen.get_rect().center
             self.play_button.draw_button()
-        pygame.display.flip()
 
     def _create_fleet(self):
         """Create the fleet of aliens."""

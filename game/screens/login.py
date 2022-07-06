@@ -11,9 +11,9 @@ class LoginScreen:
         self.screen = ai_game.screen
         self.text_color = (30, 30, 30)
         self.font = pygame.font.SysFont(None, 48)
-        self.login_button = Button(self, 575, 500, "login")
-        self.skip_button = Button(self, 575, 725, "skip login")
-        self.create_button = Button(self, 575, 275, "signup")
+        self.login_button = Button(self, 500, 575, "login")
+        self.skip_button = Button(self, 725, 575, "skip login")
+        self.create_button = Button(self, 275, 575, "signup")
         self.bg_color = ai_game.settings.bg_color
         self.username_field = TextInput(self, 425, 375, 450, 75)
         self.password_field = HiddenTextInput(self, 425, 475, 450, 75)
@@ -39,4 +39,3 @@ class LoginScreen:
         self.password_rect.right = self.username_field.input_rect.left - 10
         self.password_rect.top = self.password_field.input_rect.top + 20
         self.screen.blit(self.password_text_img, self.password_rect)
-        pygame.display.flip()
