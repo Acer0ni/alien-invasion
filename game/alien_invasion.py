@@ -1,6 +1,7 @@
 import sys
 from time import sleep
 import pygame
+import json
 from game.network.client import HighScoresClient
 from game.settings import Settings
 from game.stats import GameStats
@@ -107,8 +108,8 @@ class AlienInvasion:
                 self.stats.high_score = req["score"]
                 self.sb.prep_high_score()
             else:
-                # load local score
-                pass
+                self.state.using_local_highscores = True
+
         elif self.state.gamestate == self.state.register_screen:
             self._check_active_field(mouse_pos)
             if self.register_screen.register_button.rect.collidepoint(mouse_pos):
@@ -196,7 +197,6 @@ class AlienInvasion:
                 sys.exit()
             elif event.key == pygame.K_SPACE:
                 self._fire_bullet()
-        # this could be a lot cleaner probably
         elif self.state.gamestate == self.state.login_screen:
             self.handle_user_input(
                 event,
@@ -262,7 +262,6 @@ class AlienInvasion:
             self.bullets.empty()
             self._create_fleet()
             self.settings.increase_speed()
-
             # Increase level.
             self.stats.level += 1
             self.sb.prep_level()
@@ -384,11 +383,19 @@ class AlienInvasion:
                 self.state.gamestate = self.state.logged_in_game_inactive
                 highscore = self.client.submit_highscore(self.stats.score)
                 self.stats.high_score = highscore["score"]
-                self.sb.prep_high_score()
             else:
                 self.state.gamestate = self.state.skipped_login_game_inactive
                 # save score locally
-                self.sb.check_high_score()
+                if self.stats.score > self.stats.local_high_score:
+                    if self.state.using_local_highscores:
+                        self.stats.local_high_score = self.stats.score
+                        self.stats.high_score = self.stats.score
+                data = {"highscore": self.stats.score}
+                json_string = json.dumps(data)
+                with open("highscore.json", "w") as outfile:
+                    outfile.write(json_string)
+
+            self.sb.check_high_score()
 
             pygame.mouse.set_visible(True)
 

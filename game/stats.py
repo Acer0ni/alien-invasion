@@ -10,7 +10,7 @@ class GameStats:
         self.settings = ai_game.settings
         self.reset_stats()
         # Start the Alien Invasion in an inactive state.
-
+        self.local_high_score = self.load_high_scores()
         self.high_score = self.load_high_scores()
         self.level = 1
 
