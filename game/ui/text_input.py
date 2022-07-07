@@ -7,8 +7,8 @@ class TextInput:
         self.screen = ai_game.screen
         self.text = ""
         self.base_font = pygame.font.Font(None, 75)
-        self.color_active = pygame.Color("lightskyblue3")
-        self.color_passive = pygame.Color("chartreuse4")
+        self.color_active = pygame.Color("#14fff7")
+        self.color_passive = pygame.Color("#090c9b")
         self.is_active = False
         self.input_rect = pygame.Rect(left, top, width, height)
         self.color = self.color_passive

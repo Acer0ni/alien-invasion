@@ -12,6 +12,7 @@ class ErrorBox:
         self.text_color = (30, 30, 30)
         self.font = pygame.font.SysFont(None, 48)
         self.message = ""
+        self.bg_color = pygame.Color("#7c77b9")
         self.rect = pygame.Rect(0, 0, 350, 200)
         self.rect.center = self.screen_rect.center
         self.exit_button = Button(
@@ -22,7 +23,7 @@ class ErrorBox:
         self.message = message
 
     def draw_error_box(self):
-        self.screen.fill((0, 255, 255), self.rect)
+        self.screen.fill(self.bg_color, self.rect)
         ptext.draw(self.message, (self.rect.left, self.rect.top))
         # self.message_image = self.font.render(
         #     self.message, True, self.text_color, (0, 255, 255)
