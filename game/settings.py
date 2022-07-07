@@ -1,3 +1,6 @@
+import pygame
+
+
 class Settings:
     """a class to store all settings for ALien invasion."""
 
@@ -6,7 +9,8 @@ class Settings:
         # screen settings
         self.screen_width = 1200
         self.screen_height = 800
-        self.bg_color = (230, 230, 230)
+        self.bg_color = pygame.Color("#1c1c1c")
+        self.font_color = pygame.Color("#7c77b9")
 
         # Ship settings
         self.ship_speed = 1.5
@@ -23,7 +27,7 @@ class Settings:
         self.fleet_drop_speed = 10
 
         # how quickly the game speeds up
-        self.speedup_scale = 1.1
+        self.speedup_scale = 1.25
         # Howm quickly the alien point values increase
         self.score_scale = 1.5
 

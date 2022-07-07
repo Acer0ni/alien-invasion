@@ -1,5 +1,7 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
+# Project
+highscore.json
+
+# Byte-compiled / optimized / DLL file__pycache__/
 *.py[cod]
 *$py.class
 .DS_Store

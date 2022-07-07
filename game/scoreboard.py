@@ -2,7 +2,7 @@ import json
 import pygame.font
 
 from pygame.sprite import Group
-from ship import Ship
+from game.sprites.ship import Ship
 
 
 class Scoreboard:
@@ -15,7 +15,7 @@ class Scoreboard:
         self.screen_rect = self.screen.get_rect()
         self.settings = ai_game.settings
         self.stats = ai_game.stats
-
+        self.bg_color = pygame.Color("#ffffff")
         # Font settings for scoring information.
         self.text_color = (30, 30, 30)
         self.font = pygame.font.SysFont(None, 48)
@@ -39,7 +39,7 @@ class Scoreboard:
         """Turn the level into a rendered image"""
         level_str = f"level: {str(self.stats.level)}"
         self.level_image = self.font.render(
-            level_str, True, self.text_color, self.settings.bg_color
+            level_str, True, self.text_color, self.bg_color
         )
 
         # Postition the level below the score.
@@ -52,7 +52,7 @@ class Scoreboard:
         high_score = round(self.stats.high_score, -1)
         high_score_str = "high score: " + "{:,}".format(high_score)
         self.high_score_image = self.font.render(
-            high_score_str, True, self.text_color, self.settings.bg_color
+            high_score_str, True, self.text_color, self.bg_color
         )
 
         # Center the high score at the top of the screen.
@@ -65,7 +65,7 @@ class Scoreboard:
         rounded_score = round(self.stats.score, -1)
         score_str = "score: " + "{:,}".format(rounded_score)
         self.score_image = self.font.render(
-            score_str, True, self.text_color, self.settings.bg_color
+            score_str, True, self.text_color, self.bg_color
         )
 
         # Display the score at the top right of the screen.
