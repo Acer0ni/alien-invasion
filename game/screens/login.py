@@ -1,5 +1,6 @@
 import pygame
 import pygame.font
+import ptext
 from game.ui.button import Button
 from game.ui.text_input import TextInput
 from game.ui.hidden_text_input import HiddenTextInput
@@ -10,7 +11,7 @@ class LoginScreen:
         self.ai_game = ai_game
         self.screen = ai_game.screen
         self.title_image = pygame.image.load("images/title.png").convert_alpha()
-        self.text_color = pygame.Color("#7c77b9")
+        self.text_color = ai_game.settings.font_color
         self.font = pygame.font.SysFont(None, 48)
         self.login_button = Button(ai_game, 500, 575, "login")
         self.skip_button = Button(ai_game, 725, 575, "skip login")
@@ -49,3 +50,8 @@ class LoginScreen:
         self.password_rect.top = self.password_field.input_rect.top + 20
         self.screen.blit(self.password_text_img, self.password_rect)
         self.screen.blit(self.title_image, self.title_image_rect)
+        ptext.draw(
+            "Please create an account if this your first time playing. If you skip logging in, \nthe global highscore will still attempt to load but your score will only be seen locally",
+            (self.create_button.rect.left, self.create_button.rect.bottom + 25),
+            color=self.text_color,
+        )

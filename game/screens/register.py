@@ -18,7 +18,7 @@ class RegisterScreen:
         self.register_button = Button(ai_game, 375, 575, "register")
         self.back_button = Button(ai_game, 625, 575, "back ")
         self.font = pygame.font.SysFont(None, 48)
-        self.text_color = pygame.Color("#7c77b9")
+        self.text_color = self.settings.font_color
         self.username_field.input_rect.centerx = self.rect.centerx
         self.password_field.input_rect.centerx = self.rect.centerx
 
