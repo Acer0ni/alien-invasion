@@ -1,4 +1,5 @@
 import pygame
+import ptext
 from game.ui.button import Button
 
 
@@ -22,11 +23,11 @@ class ErrorBox:
 
     def draw_error_box(self):
         self.screen.fill((0, 255, 255), self.rect)
-        self.message_image = self.font.render(
-            self.message, True, self.text_color, (0, 255, 255)
-        )
-        self.message_image_rect = self.message_image.get_rect()
-        self.screen.blit(self.message_image, self.rect)
+        ptext.draw(self.message, (self.rect.left, self.rect.top))
+        # self.message_image = self.font.render(
+        #     self.message, True, self.text_color, (0, 255, 255)
+        # )
+        # self.screen.blit(self.message_image, self.rect)
         self.exit_button.draw_button()
 
         self.clock.tick(60)

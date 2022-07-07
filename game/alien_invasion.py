@@ -91,16 +91,15 @@ class AlienInvasion:
                 self.login_screen.login_button.rect.collidepoint(mouse_pos)
                 and not self.state.displaying_error
             ):
-                print("login button works")
+                # login
 
                 req = self.client.authenticate(
                     self.login_screen.username_field.text,
                     self.login_screen.password_field.text,
                 )
                 if not req:
-                    # figure out a way to have an error message pop up
                     self.errorbox.set_message(
-                        "error logging in: \n please check your username and password and try again"
+                        "error logging in: \nplease check your username and \npassword and try again"
                     )
                     self.state.displaying_error = True
 
@@ -111,16 +110,16 @@ class AlienInvasion:
                 self.login_screen.skip_button.rect.collidepoint(mouse_pos)
                 and not self.state.displaying_error
             ):
-                print("skip button works")
+                # skip login
                 self.state.gamestate = self.state.skipped_login_game_inactive
             if (
                 self.login_screen.create_button.rect.collidepoint(mouse_pos)
                 and not self.state.displaying_error
             ):
-                print("register button works")
+                # register screen
                 self.state.gamestate = self.state.register_screen
             req = self.client.get_highscores()
-            if req:  # move this to init?
+            if req:
                 self.stats.high_score = req["score"]
                 self.sb.prep_high_score()
             else:
@@ -132,7 +131,7 @@ class AlienInvasion:
                 self.register_screen.register_button.rect.collidepoint(mouse_pos)
                 and not self.state.displaying_error
             ):
-                print("register button works")
+                # register
                 req = self.client.register(
                     self.register_screen.username_field.text,
                     self.register_screen.password_field.text,
@@ -141,11 +140,15 @@ class AlienInvasion:
                     self.state.gamestate = self.state.logged_in_game_inactive
                 else:
                     # error message
-                    pass
+                    self.errorbox.set_message(
+                        "Error creating account \nPlease check your network connection \nand try again."
+                    )
+                    self.state.displaying_error = True
             if (
                 self.register_screen.back_button.rect.collidepoint(mouse_pos)
                 and not self.state.displaying_error
             ):
+                # back
                 self.state.gamestate = self.state.login_screen
         if (
             self.errorbox.exit_button.rect.collidepoint(mouse_pos)
