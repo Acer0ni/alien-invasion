@@ -32,18 +32,20 @@ class RegisterScreen:
         self.register_button.draw_button()
         self.back_button.draw_button()
         self.username_text_img = self.font.render(
-            "Username", True, self.text_color, self.bg_color
+            "Username:", True, self.text_color, self.bg_color
         )
 
         self.username_rect = self.username_text_img.get_rect()
         self.username_rect.right = self.username_field.input_rect.left - 10
         self.username_rect.top = self.username_field.input_rect.top + 20
+        self.username_rect.centery = self.username_field.input_rect.centery
         self.screen.blit(self.username_text_img, self.username_rect)
         self.password_text_img = self.font.render(
-            "Password", True, self.text_color, self.bg_color
+            "Password:", True, self.text_color, self.bg_color
         )
         self.password_rect = self.password_text_img.get_rect()
         self.password_rect.right = self.username_field.input_rect.left - 10
         self.password_rect.top = self.password_field.input_rect.top + 20
+        self.password_rect.centery = self.password_field.input_rect.centery
         self.screen.blit(self.password_text_img, self.password_rect)
         self.screen.blit(self.title_image, self.title_image_rect)
