@@ -11,13 +11,13 @@ class RegisterScreen:
         self.screen = ai_game.screen
         self.rect = self.screen.get_rect()
         self.settings = ai_game.settings
-        self.title_image = pygame.image.load("images/title.png").convert_alpha()
+        self.title_image = pygame.image.load("game/images/title.png").convert_alpha()
         self.bg_color = ai_game.settings.bg_color
         self.username_field = TextInput(ai_game, 425, 375, 450, 75)
         self.password_field = HiddenTextInput(ai_game, 425, 475, 450, 75)
         self.register_button = Button(ai_game, 375, 575, "register")
         self.back_button = Button(ai_game, 625, 575, "back ")
-        self.font = pygame.font.Font("fonts/Orbitron-Regular.ttf", 48)
+        self.font = self.settings.font_primary
         self.text_color = self.settings.font_color
         self.username_field.input_rect.centerx = self.rect.centerx
         self.password_field.input_rect.centerx = self.rect.centerx

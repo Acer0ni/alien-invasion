@@ -11,7 +11,8 @@ class Settings:
         self.screen_height = 800
         self.bg_color = pygame.Color("#1c1c1c")
         self.font_color = pygame.Color("#7c77b9")
-
+        self.white = pygame.Color("#e6e6e6")
+        self.font_primary = pygame.font.Font("game/fonts/Orbitron-Regular.ttf", 48)
         # Ship settings
         self.ship_speed = 1.5
         self.ship_limit = 3

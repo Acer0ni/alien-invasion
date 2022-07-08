@@ -314,7 +314,7 @@ class AlienInvasion:
         pygame.display.flip()
 
     def draw_game(self):
-        self.screen.fill("white")
+        self.screen.fill(self.settings.bg_color)
         self.ship.blitme()
 
         for bullet in self.bullets.sprites():
