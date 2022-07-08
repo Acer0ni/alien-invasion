@@ -11,7 +11,7 @@ class Button:
         self.width, self.height = width, height
         self.button_color = pygame.Color("#14fff7")
         self.text_color = ai_game.settings.font_color
-        self.font = pygame.font.SysFont(None, 48)
+        self.font = pygame.font.Font("fonts/Orbitron-Regular.ttf", 24)
 
         # Build the button's rect object and center it.
         self.rect = pygame.Rect(left, top, self.width, self.height)

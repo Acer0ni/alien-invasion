@@ -12,7 +12,7 @@ class LoginScreen:
         self.screen = ai_game.screen
         self.title_image = pygame.image.load("images/title.png").convert_alpha()
         self.text_color = ai_game.settings.font_color
-        self.font = pygame.font.SysFont(None, 48)
+        self.font = pygame.font.Font("fonts/Orbitron-Regular.ttf", 48)
         self.login_button = Button(ai_game, 500, 575, "login")
         self.skip_button = Button(ai_game, 725, 575, "skip login")
         self.create_button = Button(ai_game, 275, 575, "signup")
@@ -54,4 +54,7 @@ class LoginScreen:
             "Please create an account if this your first time playing. If you skip logging in, \nthe global highscore will still attempt to load but your score will only be seen locally",
             (self.create_button.rect.left, self.create_button.rect.bottom + 25),
             color=self.text_color,
+            fontname="fonts/Orbitron-Regular.ttf",
+            fontsize=20,
+            centerx=self.rect.centerx,
         )
