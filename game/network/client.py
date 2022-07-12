@@ -3,22 +3,22 @@ import requests
 
 
 class HighScoresClient:
-    def __init__(self):
+    def __init__(self, ai_game):
 
         self.session = requests.Session()
         self.headers = {"accept": "application/json"}
+        self.url = ai_game.settings.hs_server_url
         self.online = self.ping()
 
     def authenticate(self, user: str, password: str) -> bool:
-
         if not user or not password:
             return False
         if not self.online:
             return False
-        csrf_token = self.session.get("http://localhost:8000/api/auth/csrf")
+        csrf_token = self.session.get(f"{self.url}/api/auth/csrf")
         self.headers["X-CSRFToken"] = csrf_token.cookies.get("csrftoken")
         res = self.session.post(
-            "http://localhost:8000/api/auth/login",
+            f"{self.url}/api/auth/login",
             json={"username": user, "password": password},
             headers=self.headers,
         )
@@ -26,7 +26,7 @@ class HighScoresClient:
 
     def ping(self):
         try:
-            self.session.get("http://localhost:8000/api/auth/csrf")
+            self.session.get(f"{self.url}/api/auth/csrf")
         except requests.ConnectionError:
             return False
         return True
@@ -34,10 +34,10 @@ class HighScoresClient:
     def register(self, user: str, password: str):
         if not self.online:
             return False
-        csrf_token = self.session.get("http://localhost:8000/api/auth/csrf")
+        csrf_token = self.session.get(f"{self.url}/api/auth/csrf")
         self.headers["X-CSRFToken"] = csrf_token.cookies.get("csrftoken")
         res = self.session.post(
-            "http://localhost:8000/api/auth/register",
+            f"{self.url}/api/auth/register",
             json={"username": user, "password": password},
             headers=self.headers,
         )
@@ -49,7 +49,7 @@ class HighScoresClient:
     def get_highscores(self):
         if not self.online:
             return False
-        res = self.session.get("http://localhost:8000/api/score/highscore")
+        res = self.session.get(f"{self.url}/api/score/highscore")
         if not res.ok:
             return {}
         return res.json()
@@ -57,10 +57,10 @@ class HighScoresClient:
     def submit_highscore(self, score) -> Dict[str, int]:
         if not self.online:
             return False
-        csrf_token = self.session.get("http://localhost:8000/api/auth/csrf")
+        csrf_token = self.session.get(f"{self.url}/api/auth/csrf")
         self.headers["X-CSRFToken"] = csrf_token.cookies.get("csrftoken")
         res = self.session.post(
-            "http://localhost:8000/api/score/",
+            f"{self.url}/api/score/",
             json={
                 "score": score,
             },

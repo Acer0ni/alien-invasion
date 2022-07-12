@@ -88,4 +88,4 @@ class Scoreboard:
             with open("highscore.json", "w") as outfile:
                 outfile.write(json_string)
             self.stats.high_score = self.stats.score
-            self.prep_high_score()
+        self.prep_high_score()

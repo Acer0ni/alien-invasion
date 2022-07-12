@@ -1,4 +1,5 @@
 import pygame
+import os
 
 
 class Settings:
@@ -22,6 +23,10 @@ class Settings:
         self.bullet_height = 15
         self.bullet_color = (60, 60, 60)
         self.bullets_allowed = 3
+        self.hs_server_url = "https://ai.games.aceroni.com"
+        ENV = os.environ.get("ENV")
+        if ENV == "development":
+            self.hs_server_url = "http://localhost:8000"
 
         # alien settings
 
