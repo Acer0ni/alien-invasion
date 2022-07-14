@@ -1,12 +1,20 @@
 # Alien Invaders
 
+## Dependencies
+
+- [Python 3.9](https://www.python.org/downloads/)
+
+- [Pipenv](https://pipenv.pypa.io/en/latest/install/)
+
 ## Installation
 
-To clone the project; navigate to your desired directory on your command line of choice, then type `git clone https://github.com/Acer0ni/alien-invasion.git`.
+- Clone the repository - `git clone https://github.com/Acer0ni/alien-invasion.git`
 
-This project requires pipenv to run. To install pipenv, type `pip3 install pipenv`, once installed run `pipenv shell` in the projects root directory then `pipenv sync` to install the required dependencies.
+- Enter the repository - `cd alien-invasion`
 
-After dependencies are installed you can run the game with `python3 alien_invasion.py`
+- Install the dependencies - `pipenv sync`
+
+- Run the game - `pipenv run python3 main.py`
 
 ## Play
 
