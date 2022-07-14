@@ -1,6 +1,7 @@
 import sys
 from time import sleep
 import pygame
+import pygame
 import json
 from game.network.client import HighScoresClient
 from game.settings import Settings
@@ -24,7 +25,7 @@ class AlienInvasion:
         """init the game ,and create game resources"""
         pygame.init()
         self.settings = Settings()
-        self.clock = pygame.time.Clock
+        self.clock = pygame.time.Clock()
         self.client = HighScoresClient(self)
 
         self.screen = pygame.display.set_mode(
