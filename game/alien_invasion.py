@@ -24,7 +24,7 @@ class AlienInvasion:
         """init the game ,and create game resources"""
         pygame.init()
         self.settings = Settings()
-
+        self.clock = pygame.time.Clock
         self.client = HighScoresClient(self)
 
         self.screen = pygame.display.set_mode(
@@ -63,6 +63,7 @@ class AlienInvasion:
                 self._update_aliens()
 
             self._update_screen()
+            self.clock.tick(60)
             # redraw the screen during each pass through the loop.
 
     def _check_events(self):
