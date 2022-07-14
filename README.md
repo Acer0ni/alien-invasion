@@ -3,10 +3,9 @@
 Alien invasion is heavily inspired by the classic video game Space Invaders, and the game itself is made from a tutorial found in [Python crash course](https://nostarch.com/pythoncrashcourse2e) by Eric Matthes. It's written in python using pygame. It connects to a [global highscores client](https://github.com/Acer0ni/alien-invasion-api) that keeps track of all authentication and users highscores.
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
 ![licensebadge](https://img.shields.io/github/license/acer0ni/alien-invasion)
-
-[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
 ## Dependencies
 
